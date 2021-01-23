@@ -1,4 +1,6 @@
 # mimawarikunapi
+## ※APIに関することは、`api`ディレクトリの中の`README.md`を見てください
+## 起動・停止方法
 ```
 コンテナ起動
 docker-compose up -d
