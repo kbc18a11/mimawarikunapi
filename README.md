@@ -6,7 +6,35 @@ docker-compose up -d
 コンテナ停止
 docker-compose down
 ```
-Laravel側で、`permission denied(権限エラー)`が出た場合、以下のコマンドを実行
+
+## 初回起動限定時にDBに関する操作 
+```
+dbコンテナに入る
+docker exec -it db bash
+
+mylsqlにログイン
+mysql -u root -p
+
+.envのMYSQL_ROOT_PASSWORDの内容をパスワードをして入力
+Enter password:
+
+mysqlからログアウト
+exit
+
+dbコンテナから退出
+exit
+
+phpコンテナに入る
+docker exec -it php bash
+
+./storageの権限を開放
+chmod -R 777 ./storage
+
+dbのテーブルを構築
+php artisan migrate
+```
+
+## Laravel側で、`permission denied(権限エラー)`が出た場合、以下のコマンドを実行
 ```
 phpのコンテナに入る
 docker-compose exec php bash
