@@ -9,7 +9,7 @@ docker-compose up -d
 docker-compose down
 ```
 
-## 初回起動限定時にDBに関する操作 
+## 初回起動限定時の操作 
 ```
 dbコンテナに入る
 docker exec -it db bash
