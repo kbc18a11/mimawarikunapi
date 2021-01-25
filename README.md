@@ -11,6 +11,12 @@ docker-compose down
 
 ## 初回起動限定時の操作 
 ```
+コンテナビルド
+docker-compose build
+
+コンテナ起動
+docker-compose up -d
+
 dbコンテナに入る
 docker exec -it db bash
 
@@ -31,6 +37,9 @@ docker exec -it php bash
 
 ./storageの権限を開放
 chmod -R 777 ./storage
+
+ライブラリインストール
+composer install
 
 dbのテーブルを構築
 php artisan migrate
