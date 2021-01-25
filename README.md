@@ -14,6 +14,9 @@ docker-compose down
 コンテナビルド
 docker-compose build
 
+コンテナ起動
+docker-compose up -d
+
 dbコンテナに入る
 docker exec -it db bash
 
