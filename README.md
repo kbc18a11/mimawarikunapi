@@ -11,6 +11,9 @@ docker-compose down
 
 ## 初回起動限定時の操作 
 ```
+コンテナビルド
+docker-compose build
+
 dbコンテナに入る
 docker exec -it db bash
 
