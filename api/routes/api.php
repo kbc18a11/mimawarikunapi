@@ -23,5 +23,9 @@ Route::group(['middleware' => ['api']], function () {
         return ['result' => 'ログアウトしました'];
     });
 
+
     Route::get('/user', 'UserController@index');
+
+    Route::post('/room', 'RoomController@store');
+    Route::get('/room', 'RoomController@index');
 });
