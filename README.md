@@ -38,6 +38,9 @@ docker exec -it php bash
 ./storageの権限を開放
 chmod -R 777 ./storage
 
+ライブラリインストール
+composer install
+
 dbのテーブルを構築
 php artisan migrate
 ```
