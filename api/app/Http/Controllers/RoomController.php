@@ -20,7 +20,12 @@ class RoomController extends Controller
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
 
-        return Room::where('user_id', $user->id)->paginate(5);
+        //何件取得するかの指定がされてないか？
+        if (empty($request->limit)) {
+            # code...
+            return response()->json(Room::where('user_id', $user->id)->orderBy('name', 'asc')->paginate(5));
+        }
+        return response()->json(Room::where('user_id', $user->id)->orderBy('name', 'asc')->paginate($request->limit));
     }
 
     /**
