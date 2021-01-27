@@ -44,12 +44,14 @@ class UserController extends Controller
             ], 422);
         }
 
-        return User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-            'api_token' => Str::random(60),
-        ]);
+        return response()->json(
+            User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => Hash::make($request['password']),
+                'api_token' => Str::random(60),
+            ])
+        );
     }
 
     /**
