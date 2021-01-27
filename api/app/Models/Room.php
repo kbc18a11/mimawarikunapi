@@ -23,7 +23,8 @@ class Room extends Model
     private static $ruleMessages = [
         'required' => '必須項目です。',
         'max' => '255文字以下入力してください',
-        'unique' => '既にほかのカメラが存在しています',
+        'unique' => '既にほかの部屋が存在しています',
+        'exists' => '存在しない部屋です'
     ];
 
     public static function createValidator(array $input = [])
@@ -42,9 +43,16 @@ class Room extends Model
     {
         # code...
         $rules = [
-            'name' => ['required', 'string', 'max:255', 'unique:rooms'],
+            'id' => ['required', 'exists:rooms'],
+            'name' => ['required', 'string', 'max:255',],
             'class' => ['required', 'string', 'max:255']
         ];
+
+        $room = self::find($input['id']);
+        //$idで指定された部屋が存在しているか？ && $idで指定された部屋の名前と指定された名前が一緒か？
+        if ($room && $room->name === $input['name']) {
+            array_push($rules['name'], 'unique:rooms');
+        }
 
         # code...
         return Validator::make($input, $rules, self::$ruleMessages, self::$ruleMessages);

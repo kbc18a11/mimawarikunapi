@@ -92,15 +92,22 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
         $user = User::find(User::findIdByToken($request->header('token')));
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
 
+
+
         //バリデーションの検証
-        $validationResult = Room::createValidator($request->all());
+        $validationResult = Room::updateValidator([
+            'id' => $id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'class' => $request->class
+        ]);
 
         //バリデーションの結果が駄目か？
         if ($validationResult->fails()) {
