@@ -15,7 +15,7 @@ class RoomController extends Controller
      */
     public function index(Request $request)
     {
-        $user = User::find(User::loginCheck($request->header('token')));
+        $user = User::find(User::findIdByToken($request->header('token')));
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
@@ -36,7 +36,7 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::find(User::loginCheck($request->header('token')));
+        $user = User::find(User::findIdByToken($request->header('token')));
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
@@ -59,7 +59,7 @@ class RoomController extends Controller
             'class' => $request->class
         ];
 
-        return Room::create($createData);
+        return response()->json(Room::create($createData));
     }
 
     /**
@@ -68,20 +68,21 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
-    }
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $room = Room::find($id);
+
+        //$idで指定された部屋が存在しているか？ || 部屋のuser_idとログインユーザーのidが一致しているか？
+        if (empty($room) || $room->user_id !== $user->id) {
+            return response()->json(['error' => '存在しない部屋です'], 422);
+        }
+
+        return response()->json($room);
     }
 
     /**
@@ -93,7 +94,22 @@ class RoomController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
+
+        //バリデーションの検証
+        $validationResult = Room::createValidator($request->all());
+
+        //バリデーションの結果が駄目か？
+        if ($validationResult->fails()) {
+            # code...
+            return response()->json([
+                'result' => false,
+                'error' => $validationResult->messages()
+            ], 422);
+        }
     }
 
     /**

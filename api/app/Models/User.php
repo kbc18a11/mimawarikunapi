@@ -139,6 +139,11 @@ class User extends Authenticatable
 
     public static function findIdByToken($token)
     {
-        return self::where('api_token', $token)->first()->id;
+        $userData = self::where('api_token', $token)->first();
+
+        if ($userData) {
+            return $userData->id;
+        }
+        return 0;
     }
 }

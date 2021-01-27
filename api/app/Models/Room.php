@@ -37,4 +37,16 @@ class Room extends Model
         # code...
         return Validator::make($input, $rules, self::$ruleMessages, self::$ruleMessages);
     }
+
+    public static function updateValidator(array $input = [])
+    {
+        # code...
+        $rules = [
+            'name' => ['required', 'string', 'max:255', 'unique:rooms'],
+            'class' => ['required', 'string', 'max:255']
+        ];
+
+        # code...
+        return Validator::make($input, $rules, self::$ruleMessages, self::$ruleMessages);
+    }
 }

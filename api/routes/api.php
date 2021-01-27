@@ -26,6 +26,8 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::get('/user', 'UserController@index');
 
-    Route::post('/room', 'RoomController@store');
     Route::get('/room', 'RoomController@index');
+    Route::get('/room/{id}', 'RoomController@show');
+    Route::post('/room', 'RoomController@store');
+    Route::put('/room/{id}', 'RoomController@index');
 });
