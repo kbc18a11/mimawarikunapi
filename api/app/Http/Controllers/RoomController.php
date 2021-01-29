@@ -117,6 +117,8 @@ class RoomController extends Controller
                 'error' => $validationResult->messages()
             ], 422);
         }
+
+        return;
     }
 
     /**

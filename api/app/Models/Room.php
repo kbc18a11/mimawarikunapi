@@ -50,7 +50,7 @@ class Room extends Model
 
         $room = self::find($input['id']);
         //$idで指定された部屋が存在しているか？ && $idで指定された部屋の名前と指定された名前が一緒か？
-        if ($room && $room->name === $input['name']) {
+        if ($room && $room->name !== $input['name']) {
             array_push($rules['name'], 'unique:rooms');
         }
 
