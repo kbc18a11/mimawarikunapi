@@ -36,7 +36,7 @@ class Room extends Model
         ];
 
         # code...
-        return Validator::make($input, $rules, self::$ruleMessages, self::$ruleMessages);
+        return Validator::make($input, $rules, self::$ruleMessages);
     }
 
     public static function updateValidator(array $input = [])
@@ -55,6 +55,6 @@ class Room extends Model
         }
 
         # code...
-        return Validator::make($input, $rules, self::$ruleMessages, self::$ruleMessages);
+        return Validator::make($input, $rules, self::$ruleMessages);
     }
 }
