@@ -118,7 +118,9 @@ class RoomController extends Controller
             ], 422);
         }
 
-        return;
+        $room = Room::find($id);
+
+        return response()->json($room->update($request->all()));
     }
 
     /**
