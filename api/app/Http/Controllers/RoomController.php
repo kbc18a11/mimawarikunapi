@@ -16,6 +16,7 @@ class RoomController extends Controller
     public function index(Request $request)
     {
         $user = User::find(User::findIdByToken($request->header('token')));
+        return response()->json(['error' => 'ログインしてないユーザです']);
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }

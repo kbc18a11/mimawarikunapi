@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['api']], function () {
+Route::group(['middleware' => ['api', 'cors']], function () {
     Route::post('/register', 'UserController@store');
 
     //ログイン
     Route::post('/login', 'AuthController@login');
     Route::post('/logout', function (Request $request) {
-        return ['result' => 'ログアウトしました'];
+        return response()->json(['result' => 'ログアウトしました']);
     });
 
 

@@ -57,4 +57,15 @@ class Room extends Model
         # code...
         return Validator::make($input, $rules, self::$ruleMessages);
     }
+
+    public static function deleteValidator(array $input = [])
+    {
+        # code...
+        $rules = [
+            'id' => ['required', 'exists:rooms'],
+        ];
+
+        # code...
+        return Validator::make($input, $rules, self::$ruleMessages);
+    }
 }
