@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['api', 'cors']], function () {
+Route::group(['middleware' => ['api']], function () {
     Route::post('/register', 'UserController@store');
 
     //ログイン
@@ -30,4 +30,5 @@ Route::group(['middleware' => ['api', 'cors']], function () {
     Route::get('/room/{id}', 'RoomController@show');
     Route::post('/room', 'RoomController@store');
     Route::put('/room/{id}', 'RoomController@update');
+    Route::delete('/room/{id}', 'RoomController@destroy');
 });

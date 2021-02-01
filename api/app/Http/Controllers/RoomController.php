@@ -16,7 +16,6 @@ class RoomController extends Controller
     public function index(Request $request)
     {
         $user = User::find(User::findIdByToken($request->header('token')));
-        return response()->json(['error' => 'ログインしてないユーザです']);
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
@@ -100,8 +99,6 @@ class RoomController extends Controller
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
 
-
-
         //バリデーションの検証
         $validationResult = Room::updateValidator([
             'id' => $id,
@@ -130,8 +127,11 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
     }
 }
