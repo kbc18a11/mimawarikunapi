@@ -118,6 +118,15 @@ class RoomController extends Controller
 
         $room = Room::find($id);
 
+        if ($room->user_id !== $user->id) {
+            return response()->json([
+                'result' => false,
+                'error' => [
+                    'id' => '編集できない部屋です'
+                ]
+            ], 422);
+        }
+
         return response()->json($room->update($request->all()));
     }
 
