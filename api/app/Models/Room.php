@@ -65,6 +65,7 @@ class Room extends Model
             'id' => ['required', 'exists:rooms'],
         ];
 
+
         # code...
         return Validator::make($input, $rules, self::$ruleMessages);
     }

@@ -133,5 +133,31 @@ class RoomController extends Controller
         if (!$user) {
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
+
+        //バリデーションの検証
+        $validationResult = Room::deleteValidator(['id' => $id]);
+
+        //バリデーションの結果が駄目か？
+        if ($validationResult->fails()) {
+            # code...
+            return response()->json([
+                'result' => false,
+                'error' => $validationResult->messages()
+            ], 422);
+        }
+
+        $room = Room::find($id);
+
+
+        if ($room->user_id !== $user->id) {
+            return response()->json([
+                'result' => false,
+                'error' => [
+                    'id' => '編集できない部屋です'
+                ]
+            ], 422);
+        }
+
+        return response()->json($room->delete());
     }
 }
