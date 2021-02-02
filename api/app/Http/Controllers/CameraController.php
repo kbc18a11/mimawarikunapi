@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Camera;
+use App\Models\Room;
 
 class CameraController extends Controller
 {
@@ -17,24 +20,42 @@ class CameraController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(int $id, Request $request)
     {
-        //
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
+
+        $createData = $request->all();
+        $createData['user_id'] = $user->id;
+        $createData['room_id'] = $id;
+
+        //バリデーションの検証
+        $validationResult = Camera::createValidator($createData);
+
+        //バリデーションの結果が駄目か？
+        if ($validationResult->fails()) {
+            # code...
+            return response()->json([
+                'result' => false,
+                'error' => $validationResult->messages()
+            ], 422);
+        }
+
+        $room = Room::find($id);
+
+        //$idで指定された部屋が存在しているか？ || 部屋のuser_idとログインユーザーのidが一致しているか？
+        if (empty($room) || $room->user_id !== $user->id) {
+            return response()->json(['error' => '存在しない部屋です'], 422);
+        }
+
+        return response()->json(Camera::create($createData));
     }
 
     /**

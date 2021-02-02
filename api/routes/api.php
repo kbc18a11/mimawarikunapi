@@ -31,4 +31,6 @@ Route::group(['middleware' => ['api']], function () {
     Route::post('/room', 'RoomController@store');
     Route::put('/room/{id}', 'RoomController@update');
     Route::delete('/room/{id}', 'RoomController@destroy');
+
+    Route::post('/room/{id}/camera', 'CameraController@store');
 });
