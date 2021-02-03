@@ -33,4 +33,5 @@ Route::group(['middleware' => ['api']], function () {
     Route::delete('/room/{id}', 'RoomController@destroy');
 
     Route::post('/room/{id}/camera', 'CameraController@store');
+    Route::get('/room/{id}/camera', 'CameraController@show');
 });

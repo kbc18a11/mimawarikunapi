@@ -26,7 +26,7 @@ class Camera extends Model
     private static $ruleMessages = [
         'required' => '必須項目です。',
         'max' => '255文字以下入力してください',
-        'unique' => '既にほかの部屋が存在しています',
+        'unique' => '既にほかのカメラの名前が存在しています',
         'exists' => '存在しない部屋です'
     ];
 
@@ -41,5 +41,11 @@ class Camera extends Model
 
         # code...
         return Validator::make($input, $rules, self::$ruleMessages);
+    }
+
+
+    public static function findCameraObjByRoomId(int $roomId)
+    {
+        return self::where('room_id', $roomId)->get();
     }
 }

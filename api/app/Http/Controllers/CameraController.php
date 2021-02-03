@@ -64,9 +64,22 @@ class CameraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        //
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
+
+
+        $room = Room::find($id);
+
+        //$idで指定された部屋が存在しているか？ || 部屋のuser_idとログインユーザーのidが一致しているか？
+        if (empty($room) || $room->user_id !== $user->id) {
+            return response()->json(['error' => '存在しない部屋です'], 422);
+        }
+
+        return Camera::findCameraObjByRoomId($id);
     }
 
     /**
