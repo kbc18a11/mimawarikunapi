@@ -44,6 +44,22 @@ class Camera extends Model
     }
 
 
+    public static function updateValidator(array $input = [])
+    {
+        # code...
+        $rules = [
+            'name' => [
+                'required', 'string', 'max:255',
+                Rule::unique('cameras')->ignore($input['id'])
+                    ->where('room_id', $input['room_id'])
+            ],
+            'usetype' => ['required'],
+        ];
+
+        # code...
+        return Validator::make($input, $rules, self::$ruleMessages);
+    }
+
     public static function findCameraObjByRoomId(int $roomId)
     {
         return self::where('room_id', $roomId)->get();
