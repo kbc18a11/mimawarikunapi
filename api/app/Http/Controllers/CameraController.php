@@ -119,6 +119,8 @@ class CameraController extends Controller
                 'error' => $validationResult->messages()
             ], 422);
         }
+
+        return response()->json($camera->update($request->all()));
     }
 
     /**
