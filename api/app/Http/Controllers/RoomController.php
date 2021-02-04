@@ -28,6 +28,21 @@ class RoomController extends Controller
         return response()->json(Room::where('user_id', $user->id)->orderBy('name', 'asc')->paginate($request->limit));
     }
 
+    public function state(Request $request)
+    {
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
+
+        //何件取得するかの指定がされてないか？
+        if (empty($request->limit)) {
+            # code...
+            return response()->json(Room::state($user->id));
+        }
+        return response()->json(Room::state($user->id, $request->limit));
+    }
+
     /**
      * Store a newly created resource in storage.
      *

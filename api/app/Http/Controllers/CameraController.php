@@ -83,17 +83,6 @@ class CameraController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -102,7 +91,34 @@ class CameraController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find(User::findIdByToken($request->header('token')));
+        if (!$user) {
+            return response()->json(['error' => 'ログインしてないユーザです'], 401);
+        }
+
+        $camera =  Camera::find($id);
+        //$idで指定された部屋が存在しているか？ || 部屋のuser_idとログインユーザーのidが一致しているか？
+        if (empty($camera) || $camera->user_id !== $user->id) {
+            return response()->json(['error' => '存在しないカメラです'], 422);
+        }
+
+
+        $updateData = $request->all();
+        $updateData['user_id'] = $user->id;
+        $updateData['id'] = $id;
+
+        //バリデーションの検証
+        $validationResult = Camera::updateValidator($updateData);
+
+
+        //バリデーションの結果が駄目か？
+        if ($validationResult->fails()) {
+            # code...
+            return response()->json([
+                'result' => false,
+                'error' => $validationResult->messages()
+            ], 422);
+        }
     }
 
     /**

@@ -27,11 +27,14 @@ Route::group(['middleware' => ['api']], function () {
     Route::get('/user', 'UserController@index');
 
     Route::get('/room', 'RoomController@index');
+    Route::get('/room/state', 'RoomController@state');
     Route::get('/room/{id}', 'RoomController@show');
     Route::post('/room', 'RoomController@store');
     Route::put('/room/{id}', 'RoomController@update');
     Route::delete('/room/{id}', 'RoomController@destroy');
 
+
     Route::post('/room/{id}/camera', 'CameraController@store');
     Route::get('/room/{id}/camera', 'CameraController@show');
+    Route::put('/camera/{id}', 'CameraController@update');
 });

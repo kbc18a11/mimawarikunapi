@@ -69,4 +69,17 @@ class Room extends Model
         # code...
         return Validator::make($input, $rules, self::$ruleMessages);
     }
+
+    public static function state(int $user_id, int $limit = 0)
+    {
+        $numstate = rand(1, 9);
+        $numstatestate = rand(1, 9);
+
+        //何件取得するかの指定がされてないか？
+        if (empty($limit)) {
+            # code...
+            return response()->json(Room::where('user_id', $user_id)->orderBy('name', 'asc')->paginate(5));
+        }
+        return response()->json(Room::where('user_id', $user_id)->orderBy('name', 'asc')->paginate($limit));
+    }
 }
