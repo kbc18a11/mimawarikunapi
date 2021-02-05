@@ -30,6 +30,19 @@ class Camera extends Model
         'exists' => '存在しない部屋です'
     ];
 
+
+    public static function afterRoomCreateValidator(array $input = [])
+    {
+        # code...
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'usetype' => ['required'],
+        ];
+
+        # code...
+        return Validator::make($input, $rules, self::$ruleMessages);
+    }
+
     public static function createValidator(array $input = [])
     {
         # code...

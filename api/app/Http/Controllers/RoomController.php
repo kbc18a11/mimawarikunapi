@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Camera;
 
 class RoomController extends Controller
 {
@@ -64,17 +65,56 @@ class RoomController extends Controller
             # code...
             return response()->json([
                 'result' => false,
-                'error' => $validationResult->messages()
+                'roomError' => $validationResult->messages()
             ], 422);
         }
 
-        $createData = [
+
+        //カメラの情報は、存在するか？
+        if (!empty($request->cameras)) {
+            //カメラのバリデーション
+            $camerasError = [
+                'result' => false,
+                'errors' => []
+            ];
+
+            foreach ($request->cameras as $cameraData) {
+                //バリデーションの検証
+                $validationResult = Camera::afterRoomCreateValidator($cameraData);
+
+                //バリデーションの結果が駄目か？
+                if ($validationResult->fails()) {
+                    # code...
+                    array_push($camerasError['errors'], $validationResult->messages());
+                }
+            }
+
+            //エラーは存在するか？
+            if (count($camerasError['errors'])) {
+                return response()->json($camerasError, 422);
+            }
+        }
+
+        //部屋の作成
+        $createRoomData = [
             'user_id' => $user->id,
             'name' => $request->name,
             'class' => $request->class
         ];
+        $roomData = Room::create($createRoomData);
 
-        return response()->json(Room::create($createData));
+        //カメラの情報は、存在するか？
+        if (!empty($request->cameras)) {
+            //カメラの作成
+            foreach ($request->cameras as $createCameraData) {
+                $createCameraData['user_id'] = $user->id;
+                $createCameraData['room_id'] = $roomData->id;
+
+                Camera::create($createCameraData);
+            }
+        }
+
+        return response()->json(['result' => true]);
     }
 
     /**
@@ -181,6 +221,8 @@ class RoomController extends Controller
                 ]
             ], 422);
         }
+
+        Camera::where('room_id', $id)->delete();
 
         return response()->json($room->delete());
     }
