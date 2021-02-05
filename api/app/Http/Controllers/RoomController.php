@@ -84,8 +84,8 @@ class RoomController extends Controller
 
                 //バリデーションの結果が駄目か？
                 if ($validationResult->fails()) {
-                    # code...
-                    array_push($camerasError['errors'], $validationResult->messages());
+                    $errorMessage = $validationResult->messages();
+                    array_push($camerasError['errors'], ['id' => $cameraData['id'], 'error' => $errorMessage]);
                 }
             }
 
