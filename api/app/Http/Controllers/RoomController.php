@@ -182,7 +182,48 @@ class RoomController extends Controller
             ], 422);
         }
 
-        return response()->json($room->update($request->all()));
+        //カメラの情報は、存在するか？
+        if (!empty($request->cameras)) {
+            //カメラのバリデーション
+            $camerasError = [
+                'result' => false,
+                'errors' => []
+            ];
+
+            foreach ($request->cameras as $cameraData) {
+                $cameraData['id'] = $id;
+                $cameraData['room_id'] = $id;
+
+                //バリデーションの検証
+                $validationResult = Camera::updateValidator($cameraData);
+
+                //バリデーションの結果が駄目か？
+                if ($validationResult->fails()) {
+                    $errorMessage = $validationResult->messages();
+                    array_push($camerasError['errors'], ['id' => $cameraData['id'], 'error' => $errorMessage]);
+                }
+            }
+
+            //エラーは存在するか？
+            if (count($camerasError['errors'])) {
+                return response()->json($camerasError, 422);
+            }
+        }
+
+        //カメラの情報は、存在するか？
+        if (!empty($request->cameras)) {
+            //カメラの作成
+            foreach ($request->cameras as $updateCameraData) {
+                $createCameraData['user_id'] = $user->id;
+                $createCameraData['room_id'] = $room->id;
+
+                $camera = Camera::find($updateCameraData['id']);
+                $camera->update($updateCameraData);
+            }
+        }
+
+        $room->update($request->all());
+        return response()->json(['result' => true]);
     }
 
     /**
