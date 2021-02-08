@@ -137,6 +137,8 @@ class RoomController extends Controller
             return response()->json(['error' => '存在しない部屋です'], 422);
         }
 
+        $room['cameras'] = Camera::where('room_id', $id)->get();
+
         return response()->json($room);
     }
 
