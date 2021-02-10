@@ -70,16 +70,18 @@ class Room extends Model
         return Validator::make($input, $rules, self::$ruleMessages);
     }
 
+    /**
+     * 部屋の情報をランダムで取得
+     */
     public static function state(int $user_id, int $limit = 0)
     {
-        $numstate = rand(1, 9);
-        $numstatestate = rand(1, 9);
-
         //何件取得するかの指定がされてないか？
         if (empty($limit)) {
             # code...
-            return response()->json(Room::where('user_id', $user_id)->orderBy('name', 'asc')->paginate(5));
+            return response()->json(self::where('user_id', $user_id)->inRandomOrder()
+                ->orderBy('name', 'asc')->paginate(5));
         }
-        return response()->json(Room::where('user_id', $user_id)->orderBy('name', 'asc')->paginate($limit));
+        return response()->json(self::where('user_id', $user_id)->inRandomOrder()
+            ->orderBy('name', 'asc')->paginate($limit));
     }
 }
