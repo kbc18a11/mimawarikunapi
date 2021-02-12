@@ -36,12 +36,7 @@ class RoomController extends Controller
             return response()->json(['error' => 'ログインしてないユーザです'], 401);
         }
 
-        //何件取得するかの指定がされてないか？
-        if (empty($request->limit)) {
-            # code...
-            return response()->json(Room::state($user->id));
-        }
-        return response()->json(Room::state($user->id, $request->limit));
+        return response()->json(Room::state($user->id));
     }
 
     /**
@@ -193,16 +188,28 @@ class RoomController extends Controller
             ];
 
             foreach ($request->cameras as $cameraData) {
-                $cameraData['id'] = $id;
                 $cameraData['room_id'] = $id;
 
+                //カメラのidは存在するか？
+                if (!empty($cameraData['id'])) {
+                    //バリデーションの検証
+                    $validationResult = Camera::updateValidator($cameraData);
+
+                    //バリデーションの結果が駄目か？
+                    if ($validationResult->fails()) {
+                        $errorMessage = $validationResult->messages();
+                        array_push($camerasError['errors'], ['id' => $cameraData['id'], 'error' => $errorMessage]);
+                    }
+                    continue;
+                }
+
                 //バリデーションの検証
-                $validationResult = Camera::updateValidator($cameraData);
+                $validationResult = Camera::createValidator($cameraData);
 
                 //バリデーションの結果が駄目か？
                 if ($validationResult->fails()) {
                     $errorMessage = $validationResult->messages();
-                    array_push($camerasError['errors'], ['id' => $cameraData['id'], 'error' => $errorMessage]);
+                    array_push($camerasError['errors'], ['id' => 'idは存在しません', 'error' => $errorMessage]);
                 }
             }
 
@@ -215,12 +222,17 @@ class RoomController extends Controller
         //カメラの情報は、存在するか？
         if (!empty($request->cameras)) {
             //カメラの作成
-            foreach ($request->cameras as $updateCameraData) {
-                $createCameraData['user_id'] = $user->id;
-                $createCameraData['room_id'] = $room->id;
+            foreach ($request->cameras as $cameraData) {
+                if (empty($cameraData['id'])) {
+                    $cameraData['user_id'] = $user->id;
+                    $cameraData['room_id'] = $room->id;
+                    Camera::create($cameraData);
 
-                $camera = Camera::find($updateCameraData['id']);
-                $camera->update($updateCameraData);
+                    continue;
+                }
+
+                $camera = Camera::find($cameraData['id']);
+                $camera->update($cameraData);
             }
         }
 

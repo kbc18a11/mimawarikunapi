@@ -73,15 +73,11 @@ class Room extends Model
     /**
      * 部屋の情報をランダムで取得
      */
-    public static function state(int $user_id, int $limit = 0)
+    public static function state(int $user_id)
     {
-        //何件取得するかの指定がされてないか？
-        if (empty($limit)) {
-            # code...
-            return response()->json(self::where('user_id', $user_id)->inRandomOrder()
-                ->orderBy('name', 'asc')->paginate(5));
-        }
-        return response()->json(self::where('user_id', $user_id)->inRandomOrder()
-            ->orderBy('name', 'asc')->paginate($limit));
+        $limit = mt_rand(0, 10);
+        return self::where('user_id', $user_id)->inRandomOrder()
+            ->limit($limit)
+            ->orderBy('name', 'asc')->get();
     }
 }
