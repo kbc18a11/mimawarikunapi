@@ -75,9 +75,27 @@ class Room extends Model
      */
     public static function state(int $user_id)
     {
-        $limit = mt_rand(0, 10);
-        return self::where('user_id', $user_id)->inRandomOrder()
+        $rand = mt_rand(1, 10);
+        $limit = mt_rand(1, 10);
+
+        $roomData = self::where('user_id', $user_id)->inRandomOrder()
             ->limit($limit)
             ->orderBy('name', 'asc')->get();
+
+        foreach ($roomData as $room) {
+            if ($room['id'] % $rand === 0) {
+                $room['person'] = true;
+            }
+
+            if (($room['id'] + 1) % $rand === 0) {
+                $room['electricity'] = true;
+            }
+
+            if (($room['id'] + 1) % $rand === 0) {
+                $room['window'] = true;
+            }
+        }
+
+        return $roomData;
     }
 }
